@@ -1,20 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" {
-	        w.WriteHeader(http.StatusNotFound)
-	       	fmt.Fprintf(w, "Damn, you broke it.")
-	        return
-	    }
-		fmt.Fprintf(w, "You apparently aren't using a Gemini client.")
-	})
+	fs := http.FileServer(http.Dir("./static"))
 	
+	http.Handle("/", fs)
+
+	log.Println("Server running...")
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
